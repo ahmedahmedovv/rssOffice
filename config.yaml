@@ -1,0 +1,266 @@
+# Cache Settings
+cache:
+  directory: cache
+  translation:
+    max_size: 1000
+    file: translation_cache.json
+  feed:
+    duration_hours: 1
+    file: feed_cache.json
+
+# Feed Processing
+feeds:
+  entry_age_limit_hours: 48
+  output:
+    directory: data
+    file: feed_entries.json
+
+# Translation
+translation:
+  target_language: en
+  source_language: auto
+  max_text_length: 5000
+
+# Keyword Extraction
+keywords:
+  max_ngram_size: 2
+  num_keywords: 5
+  deduplication:
+    threshold: 0.7
+    function: seqm
+  window_size: 1
+  scoring:
+    exact_match: 2
+    partial_match: 1
+  categories:
+    Events:
+      weight: 1.0
+      terms:
+        - event
+        - events
+        - festival
+        - concert
+        - exhibition
+        - show
+        - performance
+        - meeting
+        - conference
+        - workshop
+        - seminar
+        - fair
+        - expo
+        - symposium
+        - ceremony
+        - celebration
+        - gala
+        - convention
+        - summit
+        - forum
+        - parade
+        - opening
+        - launch
+        - premiere
+        - tournament
+        - competition
+        - awards
+    Culture:
+      weight: 1.0
+      terms:
+        - art
+        - museum
+        - gallery
+        - theatre
+        - cinema
+        - music
+        - dance
+        - cultural
+        - artist
+        - painting
+        - sculpture
+        - opera
+        - ballet
+        - orchestra
+        - film
+        - movie
+        - documentary
+        - heritage
+        - tradition
+        - literature
+        - poetry
+        - crafts
+        - artistic
+        - entertainment
+        - creative
+        - musical
+        - theatrical
+    Technology:
+      weight: 1.2  # Higher weight for tech news
+      terms:
+        - tech
+        - technology
+        - software
+        - hardware
+        - digital
+        - ai
+        - "artificial intelligence"
+        - programming
+        - cyber
+        - innovation
+        - startup
+        - blockchain
+        - cryptocurrency
+        - "machine learning"
+        - "data science"
+        - "cloud computing"
+        - robotics
+        - automation
+        - "virtual reality"
+        - "augmented reality"
+        - iot
+        - "internet of things"
+        - cybersecurity
+        - fintech
+        - biotech
+        - quantum
+        - mobile
+        - app
+        - development
+        - coding
+        - 5g
+        - network
+        - computing
+        - algorithm
+        - database
+        - analytics
+    Military:
+      weight: 1.3  # Higher weight for military news
+      terms:
+        - military
+        - defense
+        - army
+        - war
+        - weapon
+        - combat
+        - tactical
+        - strategic
+        - forces
+        - navy
+        - "air force"
+        - marines
+        - soldier
+        - veteran
+        - warfare
+        - missile
+        - artillery
+        - intelligence
+        - security
+        - operation
+        - deployment
+        - training
+        - exercise
+        - command
+        - squadron
+        - battalion
+        - regiment
+        - "defense system"
+        - "military tech"
+        - aerospace
+        - drone
+        - radar
+    Business:
+      weight: 1.1
+      terms:
+        - business
+        - finance
+        - economy
+        - market
+        - investment
+        - startup
+        - company
+        - corporate
+        - industry
+        - trade
+        - commerce
+        - stock
+        - entrepreneur
+        - management
+        - leadership
+        - strategy
+        - innovation
+        - partnership
+        - merger
+        - acquisition
+        - funding
+        - "venture capital"
+        - banking
+        - economic
+    Science:
+      weight: 1.1
+      terms:
+        - science
+        - research
+        - study
+        - discovery
+        - experiment
+        - laboratory
+        - scientific
+        - biology
+        - chemistry
+        - physics
+        - astronomy
+        - space
+        - environmental
+        - climate
+        - medical
+        - health
+        - medicine
+        - pharmaceutical
+        - genetics
+        - neuroscience
+        - ecology
+        - evolution
+        - quantum
+        - molecular
+  fallback:
+    default_category: Other
+    time_related_words:
+      - week
+      - weekend
+      - upcoming
+      - schedule
+      - today
+      - tomorrow
+    time_category: Events
+
+# Report Generation
+reports:
+  directory: reports
+  file: feed_report.yaml
+  timing_breakdown:
+    fetching: 0.60
+    parsing: 0.20
+    translation: 0.15
+    categorization: 0.05
+
+# Description Processing
+description:
+  max_length: 500
+  truncation_suffix: "..."
+  clean_html: true
+  image:
+    max_width: 120
+    max_height: 120
+
+# API Settings
+api:
+  host: 127.0.0.1
+  port: 5000
+  debug: true
+
+# Logging
+logging:
+  level: INFO
+  file: app.log
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  max_size_mb: 10
+  backup_count: 5 
