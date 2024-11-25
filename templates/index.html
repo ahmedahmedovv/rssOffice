@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html class="dark">
+<head>
+    <title>RSS Feeds</title>
+    <link href="{{ url_for('static', filename='dist/main.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="bg-gray-900">
+    <div class="max-w-4xl mx-auto p-8">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-5xl font-bold text-gray-100 tracking-tight">
+                Latest News
+            </h1>
+            
+            <div class="flex gap-2">
+                {% for filter in time_filters %}
+                <a href="/?time_filter={{ filter.hours }}" 
+                   class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200
+                          {% if current_filter == filter.hours %}
+                              bg-blue-600 text-white
+                          {% else %}
+                              bg-gray-800 text-gray-300 hover:bg-gray-700
+                          {% endif %}">
+                    {{ filter.label }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="mb-8 text-gray-400 text-sm">
+            {% set total_articles = namespace(count=0) %}
+            {% for category in categories %}
+                {% set total_articles.count = total_articles.count + categorized_feeds[category]|length %}
+            {% endfor %}
+            Showing {{ total_articles.count }} articles
+            {% if current_filter == 24 %}
+                from the last 24 hours
+            {% elif current_filter == 48 %}
+                from the last 2 days
+            {% elif current_filter == 168 %}
+                from the last week
+            {% elif current_filter == 720 %}
+                from the last month
+            {% endif %}
+        </div>
+        
+        <div class="space-y-10">
+            {% for category in categories %}
+            <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700">
+                <div class="{% if category == 'Military' %}bg-red-900/30 border-red-500
+                         {% elif category == 'Politics' %}bg-blue-900/30 border-blue-500
+                         {% elif category == 'Economy' %}bg-emerald-900/30 border-emerald-500
+                         {% elif category == 'Technology' %}bg-indigo-900/30 border-indigo-500
+                         {% elif category == 'Society' %}bg-amber-900/30 border-amber-500
+                         {% else %}bg-gray-700/30 border-gray-500{% endif %} 
+                         border-l-4 px-8 py-6">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-3xl font-semibold {% if category == 'Military' %}text-red-100
+                                                    {% elif category == 'Politics' %}text-blue-100
+                                                    {% elif category == 'Economy' %}text-emerald-100
+                                                    {% elif category == 'Technology' %}text-indigo-100
+                                                    {% elif category == 'Society' %}text-amber-100
+                                                    {% else %}text-gray-100{% endif %}">
+                            {{ category }}
+                        </h2>
+                        <span class="text-sm font-medium px-4 py-2 rounded-full {% if category == 'Military' %}bg-red-900/50 text-red-100
+                                                                              {% elif category == 'Politics' %}bg-blue-900/50 text-blue-100
+                                                                              {% elif category == 'Economy' %}bg-emerald-900/50 text-emerald-100
+                                                                              {% elif category == 'Technology' %}bg-indigo-900/50 text-indigo-100
+                                                                              {% elif category == 'Society' %}bg-amber-900/50 text-amber-100
+                                                                              {% else %}bg-gray-700/50 text-gray-100{% endif %}">
+                            {{ categorized_feeds[category]|length }} articles
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="divide-y divide-gray-700">
+                    {% for item in categorized_feeds[category] %}
+                    <article class="p-8 hover:bg-gray-700/50 transition-colors duration-200">
+                        <a href="{{ item.link }}" 
+                           class="text-2xl font-semibold text-gray-100 hover:text-blue-400 block mb-4 transition-colors duration-200 leading-tight" 
+                           target="_blank">
+                            {{ item.title.translation if item.title is mapping else item.title }}
+                        </a>
+                        
+                        <div class="flex items-center gap-6 mb-4 text-sm text-gray-400">
+                            <div class="flex items-center gap-2">
+                                <span class="material-icons text-base text-gray-500">source</span>
+                                <span class="font-medium">{{ item.source }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-icons text-base text-gray-500">schedule</span>
+                                <time class="flex items-center gap-2">
+                                    <span>{{ item.published | format_date }}</span>
+                                    {% set age_hours = item.published | get_age_hours %}
+                                    {% if age_hours is not none %}
+                                        <span class="px-2 py-0.5 rounded-full text-xs font-medium 
+                                            {% if age_hours < 24 %}bg-green-900/40 text-green-200 border border-green-700/50
+                                            {% elif age_hours < 48 %}bg-blue-900/40 text-blue-200 border border-blue-700/50
+                                            {% elif age_hours < 168 %}bg-amber-900/40 text-amber-200 border border-amber-700/50
+                                            {% else %}bg-red-900/40 text-red-200 border border-red-700/50{% endif %}">
+                                            {% if age_hours < 24 %}Today
+                                            {% elif age_hours < 48 %}Yesterday
+                                            {% elif age_hours < 168 %}{{ (age_hours / 24) | round | int }} days ago
+                                            {% else %}{{ ((age_hours / 24) / 7) | round | int }} weeks ago{% endif %}
+                                        </span>
+                                    {% endif %}
+                                </time>
+                            </div>
+                        </div>
+                        
+                        {% if item.description %}
+                        <div class="text-base text-gray-300 leading-relaxed mt-4">
+                            {% if item.description is mapping %}
+                                {{ item.description.translation | safe }}
+                            {% else %}
+                                {{ item.description | safe }}
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html> 
